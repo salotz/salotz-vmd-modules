@@ -1,0 +1,76 @@
+
+* Personal Modules for Visual Molecular Dynamics (VMD)
+
+** Installation
+
+The plugins will need to be copied or linked into the appropriate
+plugins folder.
+
+In the ~${VMDDIR}/plugins~ folder there is a few folders:
+
+- include :: header files for plugins
+- LINUXAMD64 (arch-specific plugins) :: this could be different and is
+  your architecture, this is where the compiled plugins go. This also
+  will have Tcl/Python scripts which are used with the compiled
+  plugins.
+- noarch :: Pure Tcl/Python plugins, these don't require any compiled
+  part.
+
+For now we are just looking at the *noarch* section which has these
+subfolders:
+
+- tcl
+- python
+
+For obvious reasons.
+
+To add plugins to this you'll just need to copy/link the scripts to
+the appropriate plugin dir for your VMD installation directory
+(~VMDDIR~; typically either ~/usr/local/lib/vmd-${version}~ or
+~$HOME/.local/lib/vmd-${version}~).
+
+#+begin_src sh
+  # tcl
+  ln -sr "${repo_dir}"/plugins/noarch/tcl/* \
+       "${VMDDIR}/plugins/noarch/tcl"
+
+  # python
+  ln -sr "${repo_dir}"/plugins/noarch/python/* \
+       "${VMDDIR}/plugins/noarch/python"
+#+end_src
+
+** Loading Plugins
+
+Then to be able to use the plugins you'll have to run some commands at
+the console or in your ~.vmdrc~.
+
+For each plugin this might differ depending on whether there is a GUI
+to configure or not.
+
+You can always load the functions/procs into the Tcl terminal
+environment like this:
+
+#+begin_src tcl
+  package require packagename
+#+end_src
+
+There are two ways to add the menu, the latter is supposed to be the
+"right way":
+
+#+begin_src tcl
+  menu tk register "Group/Extension Name" packagename
+#+end_src
+
+The second way you need to know the proc for it to call:
+
+
+#+begin_src tcl
+  vmd_install_extension packagename packagename_tk "Group/Extension Name"
+#+end_src
+
+For these plugins just see the vmd script ~load_plugins.tcl~ to load
+them all.
+
+** Plugins
+
+- textview :: an example project showing how to make a plugin
