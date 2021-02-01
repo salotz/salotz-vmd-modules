@@ -9,7 +9,7 @@ plugins folder.
 In the ~${VMDDIR}/plugins~ folder there is a few folders:
 
 - include :: header files for plugins
-- LINUXAMD64 (arch-specific plugins) :: this could be different and is
+- arch (e.g. LINUXAMD64) :: this could be different and is
   your architecture, this is where the compiled plugins go. This also
   will have Tcl/Python scripts which are used with the compiled
   plugins.
@@ -24,25 +24,42 @@ subfolders:
 
 For obvious reasons.
 
-To add plugins to this you'll just need to copy/link the scripts to
-the appropriate plugin dir for your VMD installation directory
-(~VMDDIR~; typically either ~/usr/local/lib/vmd-${version}~ or
-~$HOME/.local/lib/vmd-${version}~).
+The best solution is to just add the load path for a collection of
+plugins in your startup script:
+
+#+begin_src tcl
+  lappend auto_path $env(VMD_SHARED_PLUGINS)/noarch/tcl
+#+end_src
+
+*** A Suggestion On Configuration
+
+I load plugins from different places and not just my own.
+
+Instead of plopping them down right into the installed ~VMDDIR~ I put
+them in a shared location and then I just have a single script which
+links and expects that location.
+
+This just keeps things cleaner and doesn't put paths depending on your
+dev repos and is persistent if you need to quickly reinstall VMD for
+whatever reason.
+
+The gist is that I want to download a script I set up a directory
+~VMD_SHARED_PLUGINS~
 
 #+begin_src sh
-  # tcl
-  ln -sr "${repo_dir}"/plugins/noarch/tcl/* \
-       "${VMDDIR}/plugins/noarch/tcl"
-
-  # python
-  ln -sr "${repo_dir}"/plugins/noarch/python/* \
-       "${VMDDIR}/plugins/noarch/python"
+export VMD_SHARED_PLUGINS="$HOME/.local/share/vmd_shared_plugins"
+mkdir -p "${VMD_SHARED_PLUGINS}"/noarch/{tcl,python}
 #+end_src
+
+Then you'll download the plugins to there, rather than the VMD
+installation ~VMDDIR~.
 
 ** Loading Plugins
 
 Then to be able to use the plugins you'll have to run some commands at
 the console or in your ~.vmdrc~.
+
+*** Tcl
 
 For each plugin this might differ depending on whether there is a GUI
 to configure or not.
@@ -73,4 +90,10 @@ them all.
 
 ** Plugins
 
-- textview :: an example project showing how to make a plugin
+*** Tcl
+
+- textview :: an example project showing how to make a plugin.
+
+*** Python
+
+- emptywindow :: an example project just to show a window.
